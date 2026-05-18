@@ -3,7 +3,7 @@
    ══════════════════════════════════════════════════════════════════════ */
 
 // ── State ─────────────────────────────────────────────────────────────
-const state = const STORAGE_KEY = 'fintrack_transactions';
+const STORAGE_KEY = 'fintrack_transactions';
 
 function getTransactions() {
   return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
@@ -176,8 +176,6 @@ async function deleteTransaction(id) {
   toast('Transaksi dihapus.', 'ok');
 
   refresh();
-}
-  } catch(e) { toast('Gagal menghapus.', 'err'); }
 }
 
 // ── Render: Charts ────────────────────────────────────────────────────
@@ -399,10 +397,6 @@ try {
 } catch(e) {
   msg.textContent = 'Gagal menyimpan transaksi.';
   msg.className = 'add-msg err';
-} catch(e) {
-    msg.textContent = 'Gagal: ' + (e.message || 'Coba lagi.');
-    msg.className = 'add-msg err';
-  }
 });
 
 // ── Refresh All ───────────────────────────────────────────────────────
