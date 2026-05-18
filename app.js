@@ -12,8 +12,8 @@ function getTransactions() {
 function saveTransactions(data) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
-{
-  year:  new Date().getFullYear(),
+const state = {
+  year: new Date().getFullYear(),
   month: new Date().getMonth() + 1,
   txFilter: 'all',
   txData: [],
@@ -73,7 +73,7 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     const panel = document.getElementById('panel-' + btn.dataset.panel);
     if (panel) panel.classList.add('active');
     if (btn.dataset.panel === 'transactions') renderTransactions();
-    if (btn.dataset.panel === 'budget') loadBudget();
+   // if (btn.dataset.panel === 'budget') loadBudget();
   });
 });
 
@@ -397,6 +397,7 @@ try {
 } catch(e) {
   msg.textContent = 'Gagal menyimpan transaksi.';
   msg.className = 'add-msg err';
+}
 });
 
 // ── Refresh All ───────────────────────────────────────────────────────
@@ -404,7 +405,7 @@ async function refresh() {
   updateMonthLabels();
   await loadTransactions();
   // Reload budget if panel active
-  if (document.getElementById('panel-budget').classList.contains('active')) loadBudget();
+ // if (document.getElementById('panel-budget').classList.contains('active')) loadBudget();
 }
 
 // ── Init ──────────────────────────────────────────────────────────────
