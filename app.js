@@ -3,17 +3,7 @@
    ══════════════════════════════════════════════════════════════════════ */
 
 // ── State ─────────────────────────────────────────────────────────────
-const state = 
-const STORAGE_KEY = 'fintrack_transactions';
-
-function getTransactions() {
-  return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-}
-
-function saveTransactions(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-{
+const state = {
   year:  new Date().getFullYear(),
   month: new Date().getMonth() + 1,
   txFilter: 'all',
@@ -112,19 +102,13 @@ async function loadTransactions() {
   } catch(e) { console.error(e); }
 }
 
-async function loadTransactions() {
-  state.txData = getTransactions();
-
-  state.txData = state.txData.filter(tx => {
-    const d = new Date(tx.date);
-    return (
-      d.getFullYear() === state.year &&
-      d.getMonth() + 1 === state.month
-    );
-  });
-
-  renderTransactions();
+async function loadBudget() {
+  try {
+    const d = await fetchJSON(`/api/budgets?year=${state.year}&month=${state.month}`);
+    renderBudget(d);
+  } catch(e) { console.error(e); }
 }
+
 // ── Render: Transactions ──────────────────────────────────────────────
 document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -168,19 +152,7 @@ function renderTransactions() {
 async function deleteTransaction(id) {
   if (!confirm('Hapus transaksi ini?')) return;
   try {
-async function deleteTransaction(id) {
-  if (!confirm('Hapus transaksi ini?')) return;
-
-  let data = getTransactions();
-
-  data = data.filter(tx => tx.id !== id);
-
-  saveTransactions(data);
-
-  toast('Transaksi dihapus.', 'ok');
-
-  refresh();
-}
+    const res = await fetch(`/api/transactions/${id}`, { method: 'DELETE' });
     if (!res.ok) throw new Error();
     toast('Transaksi dihapus.', 'ok');
     refresh();
@@ -378,35 +350,8 @@ document.getElementById('addTxBtn').addEventListener('click', async () => {
     return;
   }
 
-try {
-  const allTx = getTransactions();
-
-  body.id = Date.now();
-  body.amount = parseFloat(body.amount);
-
-  allTx.push(body);
-
-  saveTransactions(allTx);
-
-  msg.textContent = '✓ Transaksi berhasil ditambahkan!';
-  msg.className = 'add-msg ok';
-
-  document.getElementById('addAmount').value = '';
-  document.getElementById('addDesc').value = '';
-
-  toast('Transaksi disimpan!', 'ok');
-
-  refresh();
-
-  setTimeout(() => {
-    msg.textContent = '';
-    msg.className = 'add-msg';
-  }, 3000);
-
-} catch(e) {
-  msg.textContent = 'Gagal menyimpan transaksi.';
-  msg.className = 'add-msg err';
-} {
+  try {
+    const res = await fetch('/api/transactions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
@@ -430,7 +375,7 @@ try {
 // ── Refresh All ───────────────────────────────────────────────────────
 async function refresh() {
   updateMonthLabels();
-   await loadTransactions();
+  await Promise.all([loadSummary(), loadMonthly(), loadTransactions()]);
   // Reload budget if panel active
   if (document.getElementById('panel-budget').classList.contains('active')) loadBudget();
 }
