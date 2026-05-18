@@ -174,16 +174,14 @@
         <div class="form-group">
           <label>Kategori</label>
           <select id="addCategory">
-  {% for c in income_categories %}
-            <option value="{{ c }}" data-for="income">
-              {{ c }}
-            </option>
-            {% endfor %}
-            {% for c in expense_categories %}
-            <option value="{{ c }}" data-for="expense" style="display:none">
-              {{ c }}
-            </option>
-            {% endfor %}
+  <!-- Income -->
+  <option value="Gaji" data-for="income">Uang Jajan</option>
+
+  <!-- Expense -->
+  <option value="Makanan" data-for="expense" style="display:none">Makanan</option>
+  <option value="Transport" data-for="expense" style="display:none">Transport</option>
+  <option value="Belanja" data-for="expense" style="display:none">Belanja</option>
+  <option value="Laundry" data-for="expense" style="display:none">Laundry</option>
           </select>
         </div>
 
